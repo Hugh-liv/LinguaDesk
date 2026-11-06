@@ -237,10 +237,17 @@ async function callAi(
     }
 
     if (!response.ok || !payload?.ok) {
-      throw new AiRequestError(
-        payload?.error || 'AI 服务暂时不可用，请稍后再试。',
-        { code: payload?.code, status: response.status },
-      )
+      const code = payload?.code
+      const message =
+        code === 'AUTH_REQUIRED'
+          ? '请先在「我的 → 云同步」登录，再使用 AI。本地学习功能不受影响。'
+          : code === 'AUTH_CONFIG'
+            ? '云端登录校验还没有配置好。请联系管理员检查 Vercel 的 Supabase 环境变量。'
+            : payload?.error || 'AI 服务暂时不可用，请稍后再试。'
+      throw new AiRequestError(message, {
+        code,
+        status: response.status,
+      })
     }
 
     return {

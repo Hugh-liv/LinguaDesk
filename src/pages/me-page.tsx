@@ -143,25 +143,26 @@ export function MePage() {
     }
   }, [])
 
-  useEffect(() => {
-    let cancelled = false
-    fetchProviderAvailability()
-      .then((value) => {
-        if (cancelled) return
-        setAvailability(value)
-        setAvailabilityError(null)
-      })
-      .catch((error: unknown) => {
-        if (cancelled) return
-        setAvailabilityError(
-          error instanceof Error
-            ? error.message
-            : '无法读取服务端 AI 配置。',
-        )
-      })
-    return () => {
-      cancelled = true
+  async function checkAvailability() {
+    try {
+      const value = await fetchProviderAvailability()
+      setAvailability(value)
+      setAvailabilityError(null)
+    } catch (error) {
+      setAvailability(null)
+      setAvailabilityError(
+        error instanceof Error
+          ? error.message
+          : 'AI 服务暂时连接不上；本地学习功能仍然可用。',
+      )
     }
+  }
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      void checkAvailability()
+    }, 0)
+    return () => window.clearTimeout(timer)
   }, [])
 
   function chooseProvider(value: AiProviderPreference) {
@@ -574,14 +575,23 @@ export function MePage() {
               className="mt-3 rounded-lg border border-destructive/20 bg-destructive/[0.05] px-3 py-2 text-[10.5px] leading-5 text-destructive"
             >
               <p>{availabilityError}</p>
-              <a
-                href="/api/health"
-                target="_blank"
-                rel="noreferrer"
-                className="mt-1 inline-block text-[10px] underline underline-offset-2"
-              >
-                打开 /api/health 诊断
-              </a>
+              <div className="mt-1 flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => void checkAvailability()}
+                  className="text-[10px] underline underline-offset-2"
+                >
+                  重试
+                </button>
+                <a
+                  href="/api/health"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[10px] underline underline-offset-2"
+                >
+                  打开 /api/health 诊断
+                </a>
+              </div>
             </div>
           )}
           {provider !== 'auto' &&

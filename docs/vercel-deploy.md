@@ -66,7 +66,7 @@ After the first deployment, copy the Vercel URL and set:
   - If it returns HTML/404, the Serverless Function is not deployed: check Root Directory = repository root and that `api/` exists.
   - If `ai.deepseek` is false, the Vercel environment variables were not applied; add them and redeploy.
   - If `cloud.configured` is false, add the Supabase server variables.
-- [ ] Open `/manifest.webmanifest`, `/icons/icon-192.png`, `/icons/apple-touch-icon.png`; all should return 200.
+- [ ] Open `/manifest.json`, `/icons/icon-192.png`, `/icons/apple-touch-icon.png`; all should return 200.
 - [ ] Create the account / sign in.
 - [ ] Open `我的 → 云同步`, click `立即同步`.
 - [ ] Check Supabase Table Editor → `user_records`: rows should appear.
@@ -82,7 +82,7 @@ After the first deployment, copy the Vercel URL and set:
 - [ ] On Android, use Chrome/Edge → Install app / Add to Home screen.
 - [ ] Sign in once; offline local data still works.
 - [ ] If the home-screen icon is blank:
-  1. Verify `/manifest.webmanifest`, `/icons/icon-192.png`, `/icons/apple-touch-icon.png` return 200.
+  1. Verify `/manifest.json`, `/icons/icon-192.png`, `/icons/apple-touch-icon.png` return 200.
   2. Remove the old home-screen icon.
   3. Clear the site's cookies/site data, reload once, then re-add.
   4. iOS sometimes caches the old icon; a new Safari tab or reinstall is usually needed.

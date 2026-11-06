@@ -166,32 +166,11 @@ export default defineConfig(({ mode }) => {
           'icons/*.png',
           'icons/linguadesk.ico',
         ],
-        manifest: {
-          id: '/',
-          name: 'LinguaDesk · 安静书桌',
-          short_name: 'LinguaDesk',
-          description: '一张安静的书桌：读英语、记词汇、做听写、精听与复述。',
-          lang: 'zh-CN',
-          dir: 'ltr',
-          orientation: 'portrait-primary',
-          theme_color: '#0F6B5E',
-          background_color: '#F7F3EA',
-          display: 'standalone',
-          start_url: '/',
-          scope: '/',
-          icons: [
-            { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
-            { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
-            {
-              src: '/icons/icon-maskable-512.png',
-              sizes: '512x512',
-              type: 'image/png',
-              purpose: 'maskable',
-            },
-          ],
-        },
+        // The manifest is a static public/manifest.json so Vercel, iOS and
+        // Android all see the same file and icon paths.
+        manifest: false,
         workbox: {
-          globPatterns: ['**/*.{js,mjs,css,html,svg,png,woff2}'],
+          globPatterns: ['**/*.{js,mjs,css,html,json,svg,png,ico,woff2}'],
           navigateFallback: '/index.html',
           cleanupOutdatedCaches: true,
         },
