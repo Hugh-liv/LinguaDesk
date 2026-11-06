@@ -15,15 +15,15 @@ import type {
   WritingTaskInput,
   WritingTaskType,
 } from '../../src/lib/ai/types.ts'
-import { callStructured, callVision, callWebSearch } from './provider.ts'
+import { callStructured, callVision, callWebSearch } from './provider.js'
 import type {
   AiHttpResult,
   AiRuntimeConfig,
   AiTool,
   WebSearchSource,
-} from './provider.ts'
+} from './provider.js'
 
-export type { AiHttpResult, AiRuntimeConfig } from './provider.ts'
+export type { AiHttpResult, AiRuntimeConfig } from './provider.js'
 import {
   SPEAKING_FEEDBACK_TOOL,
   SPEAKING_REPLY_TOOL,
@@ -31,7 +31,7 @@ import {
   buildSpeakingReplyPrompts,
   parseSpeakingFeedbackInput,
   parseSpeakingReplyInput,
-} from './speaking.ts'
+} from './speaking.js'
 
 const MAX_PACK_TEXT = 20_000
 const MAX_FOCUS_WORDS = 20

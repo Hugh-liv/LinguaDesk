@@ -1,10 +1,10 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { handleAiRequest } from './_lib/ai-core'
-import { verifyCloudAuth } from './_lib/auth'
+import { handleAiRequest } from './_lib/ai-core.js'
+import { verifyCloudAuth } from './_lib/auth.js'
 import {
   getProviderAvailability,
   type AiRuntimeConfig,
-} from './_lib/provider'
+} from './_lib/provider.js'
 
 function runtimeConfig(): AiRuntimeConfig {
   return {
