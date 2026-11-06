@@ -12,6 +12,9 @@
   "functions": {
     "api/generate.ts": {
       "maxDuration": 60
+    },
+    "api/health.ts": {
+      "maxDuration": 10
     }
   }
 }
