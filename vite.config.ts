@@ -160,13 +160,20 @@ export default defineConfig(({ mode }) => {
       aiDevPlugin(runtime, authConfig),
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['favicon.svg', 'icons/*.png', 'icons/linguadesk.ico'],
+        includeAssets: [
+          'favicon.svg',
+          'favicon.ico',
+          'icons/*.png',
+          'icons/linguadesk.ico',
+        ],
         manifest: {
+          id: '/',
           name: 'LinguaDesk · 安静书桌',
           short_name: 'LinguaDesk',
           description: '一张安静的书桌：读英语、记词汇、做听写、精听与复述。',
           lang: 'zh-CN',
           dir: 'ltr',
+          orientation: 'portrait-primary',
           theme_color: '#0F6B5E',
           background_color: '#F7F3EA',
           display: 'standalone',

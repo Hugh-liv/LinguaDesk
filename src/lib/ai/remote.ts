@@ -92,21 +92,48 @@ export function setProviderPreference(
 }
 
 export async function fetchProviderAvailability(): Promise<ProviderAvailability> {
-  let payload: ApiEnvelope | null = null
+  let response: Response
   try {
-    const response = await fetch('/api/generate', {
+    response = await fetch('/api/generate', {
       method: 'GET',
       headers: { accept: 'application/json' },
       cache: 'no-store',
     })
-    payload = (await response.json()) as ApiEnvelope
-    if (!response.ok || !payload?.ok) {
-      throw new Error('AI config endpoint unavailable')
-    }
   } catch {
     throw new AiRequestError(
-      '无法读取服务端 AI 配置。请确认 API 代理（Vercel Function 或自托管 server）正在运行。',
+      '无法连接 AI 配置接口。请检查网络，或确认 API 代理正在运行。',
       { code: 'AI_CONFIG_UNAVAILABLE' },
+    )
+  }
+
+  if (!response.ok) {
+    throw new AiRequestError(
+      `AI 配置接口返回 HTTP ${response.status}。请检查 Vercel Serverless Function 是否部署，或打开 /api/health 诊断。`,
+      { code: 'AI_CONFIG_UNAVAILABLE', status: response.status },
+    )
+  }
+
+  const contentType = response.headers.get('content-type') ?? ''
+  if (!contentType.includes('application/json')) {
+    throw new AiRequestError(
+      'AI 配置接口返回了网页而不是 JSON。Vercel 可能没有部署 api/ 函数，请确认 Root Directory 是仓库根目录，并打开 /api/health 检查。',
+      { code: 'AI_CONFIG_UNAVAILABLE' },
+    )
+  }
+
+  let payload: ApiEnvelope
+  try {
+    payload = (await response.json()) as ApiEnvelope
+  } catch {
+    throw new AiRequestError(
+      'AI 配置接口返回了无法解析的 JSON。请查看 Vercel Functions 日志。',
+      { code: 'AI_CONFIG_UNAVAILABLE' },
+    )
+  }
+  if (!payload.ok) {
+    throw new AiRequestError(
+      payload.error || '服务端 AI 配置不可用。',
+      { code: payload.code || 'AI_CONFIG_UNAVAILABLE' },
     )
   }
 

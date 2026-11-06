@@ -62,6 +62,11 @@ After the first deployment, copy the Vercel URL and set:
 ## 5. Deploy and verify
 
 - [ ] Open the Vercel URL.
+- [ ] Open `/api/health` first. It must return JSON with `serverless: true`.
+  - If it returns HTML/404, the Serverless Function is not deployed: check Root Directory = repository root and that `api/` exists.
+  - If `ai.deepseek` is false, the Vercel environment variables were not applied; add them and redeploy.
+  - If `cloud.configured` is false, add the Supabase server variables.
+- [ ] Open `/manifest.webmanifest`, `/icons/icon-192.png`, `/icons/apple-touch-icon.png`; all should return 200.
 - [ ] Create the account / sign in.
 - [ ] Open `我的 → 云同步`, click `立即同步`.
 - [ ] Check Supabase Table Editor → `user_records`: rows should appear.
@@ -71,10 +76,17 @@ After the first deployment, copy the Vercel URL and set:
 
 ## 6. Phone/PWA
 
+- [ ] Open the **production deployment/alias**, not a Vercel preview URL.
 - [ ] Open the site over HTTPS.
-- [ ] Use the browser’s “Add to Home Screen”.
+- [ ] On iOS, use Safari → Share → Add to Home Screen.
+- [ ] On Android, use Chrome/Edge → Install app / Add to Home screen.
 - [ ] Sign in once; offline local data still works.
-- [ ] On iOS, use Safari for PWA installation; on Android, Chrome/Edge.
+- [ ] If the home-screen icon is blank:
+  1. Verify `/manifest.webmanifest`, `/icons/icon-192.png`, `/icons/apple-touch-icon.png` return 200.
+  2. Remove the old home-screen icon.
+  3. Clear the site's cookies/site data, reload once, then re-add.
+  4. iOS sometimes caches the old icon; a new Safari tab or reinstall is usually needed.
+  5. Do not install from an in-app browser (WeChat, QQ, etc.).
 
 ## 7. Security checks
 
@@ -108,6 +120,9 @@ If the current data is only in `http://localhost:5173`:
 
 | Symptom | Check |
 |---|---|
+| “无法读取服务端 AI 配置” | Open `/api/health`. If HTML/404, functions are not deployed or Root Directory is wrong; if JSON `ai.deepseek:false`, Vercel env vars missing |
+| `/api/health` returns HTML | Vercel is serving the SPA fallback for `/api`; check Root Directory and that `api/` is in the repo |
+| `/api/health` 404 | The `api` folder is not part of the Vercel project/root |
 | AI 401 `AUTH_REQUIRED` | You are signed out, or the token is stale; sign in again |
 | AI 401 with correct login | `SUPABASE_URL`/`SUPABASE_ANON_KEY` server env missing/wrong |
 | AI 503 `AUTH_UNAVAILABLE` | Server cannot reach Supabase Auth; network/VPN |

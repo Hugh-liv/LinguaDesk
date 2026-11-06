@@ -569,12 +569,20 @@ export function MePage() {
           </div>
 
           {availabilityError && (
-            <p
+            <div
               role="alert"
               className="mt-3 rounded-lg border border-destructive/20 bg-destructive/[0.05] px-3 py-2 text-[10.5px] leading-5 text-destructive"
             >
-              {availabilityError}
-            </p>
+              <p>{availabilityError}</p>
+              <a
+                href="/api/health"
+                target="_blank"
+                rel="noreferrer"
+                className="mt-1 inline-block text-[10px] underline underline-offset-2"
+              >
+                打开 /api/health 诊断
+              </a>
+            </div>
           )}
           {provider !== 'auto' &&
             availability &&
