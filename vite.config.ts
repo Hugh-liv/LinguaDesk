@@ -173,6 +173,8 @@ export default defineConfig(({ mode }) => {
           globPatterns: ['**/*.{js,mjs,css,html,json,svg,png,ico,woff2}'],
           navigateFallback: '/index.html',
           cleanupOutdatedCaches: true,
+          skipWaiting: true,
+          clientsClaim: true,
         },
         devOptions: {
           enabled: false,

@@ -91,7 +91,7 @@ export function setProviderPreference(
   }
 }
 
-export async function fetchProviderAvailability(): Promise<ProviderAvailability> {
+async function fetchGeneratedAvailability(): Promise<ProviderAvailability> {
   let response: Response
   try {
     response = await fetch('/api/generate', {
@@ -152,6 +152,44 @@ export async function fetchProviderAvailability(): Promise<ProviderAvailability>
       payload.defaultProvider === 'deepseek'
         ? payload.defaultProvider
         : null,
+  }
+}
+
+async function fetchHealthAvailability(): Promise<ProviderAvailability | null> {
+  try {
+    const response = await fetch('/api/health', {
+      headers: { accept: 'application/json' },
+      cache: 'no-store',
+    })
+    if (!response.ok) return null
+    const payload = (await response.json()) as Record<string, unknown>
+    if (payload.ok !== true || payload.serverless !== true) return null
+    const ai = isRecord(payload.ai) ? payload.ai : {}
+    const provider = asString(ai.provider)
+    return {
+      anthropic: ai.anthropic === true,
+      deepseek: ai.deepseek === true,
+      search: ai.search === true,
+      vision: ai.vision === true,
+      visionModel: null,
+      defaultProvider:
+        provider === 'anthropic' || provider === 'deepseek' ? provider : null,
+    }
+  } catch {
+    return null
+  }
+}
+
+export async function fetchProviderAvailability(): Promise<ProviderAvailability> {
+  try {
+    return await fetchGeneratedAvailability()
+  } catch (error) {
+    // /api/generate and /api/health are separate functions. If only the
+    // config route is failing, health still gives the app enough information
+    // to render a useful state instead of a dead-end error.
+    const health = await fetchHealthAvailability()
+    if (health) return health
+    throw error
   }
 }
 
